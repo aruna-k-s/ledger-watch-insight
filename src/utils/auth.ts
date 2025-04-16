@@ -135,7 +135,10 @@ export const getCurrentUser = (): User | null => {
 // Check if user has specific permission
 export const hasPermission = (permission: string): boolean => {
   const user = getCurrentUser();
-  return !!user?.permissions.includes(permission);
+  if (!user || !user.permissions) {
+    return false;
+  }
+  return user.permissions.includes(permission);
 };
 
 // Logout
@@ -144,4 +147,3 @@ export const logout = (): void => {
   localStorage.removeItem("farmLedger_user");
   toast.success("Logged out successfully");
 };
-
