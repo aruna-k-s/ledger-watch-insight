@@ -42,6 +42,17 @@ const NavBar: React.FC = () => {
             Dashboard
           </Link>
           <Link 
+            to="/activities" 
+            className={cn(
+              "px-3 py-2 rounded-md text-sm font-medium",
+              location.pathname === "/activities" 
+                ? "bg-farm-green text-white" 
+                : "text-gray-700 hover:bg-gray-100"
+            )}
+          >
+            Activities
+          </Link>
+          <Link 
             to="/ledger" 
             className={cn(
               "px-3 py-2 rounded-md text-sm font-medium",
@@ -92,6 +103,18 @@ const NavBar: React.FC = () => {
               onClick={() => setShowMobileMenu(false)}
             >
               Dashboard
+            </Link>
+            <Link 
+              to="/activities" 
+              className={cn(
+                "block px-3 py-2 rounded-md text-base font-medium",
+                location.pathname === "/activities" 
+                  ? "bg-farm-green text-white" 
+                  : "text-gray-700 hover:bg-gray-100"
+              )}
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Activities
             </Link>
             <Link 
               to="/ledger" 
