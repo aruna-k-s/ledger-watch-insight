@@ -94,16 +94,16 @@ export default function AddExpenseForm({ onAddSuccess }: AddExpenseFormProps) {
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     try {
-      // Format labor details if the category is labor
+      // For labor category, we'll pass the labor details directly without nesting
       let details = data.details;
       if (data.category === "labor" && data.details) {
         details = {
           ...data.details,
-          laborers: {
-            count: data.details.laborCount || 0,
-            rate: data.details.laborRate || 0,
-            hours: data.details.laborHours || 0,
-          },
+          // We're not creating a nested laborers object anymore
+          // Just passing the labor fields directly
+          laborCount: data.details.laborCount || 0,
+          laborRate: data.details.laborRate || 0,
+          laborHours: data.details.laborHours || 0,
         };
       }
       
