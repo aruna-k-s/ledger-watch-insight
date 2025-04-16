@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(1, "Password is required"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -129,8 +129,16 @@ const Login: React.FC = () => {
                   </div>
                 </div>
                 <div className="mt-4 text-center text-xs text-muted-foreground">
-                  <p>Email: demo@example.com</p>
-                  <p>Password: password123</p>
+                  <div className="mb-2">
+                    <p className="font-bold">Admin User:</p>
+                    <p>Email: admin@farm.com</p>
+                    <p>Password: admin</p>
+                  </div>
+                  <div>
+                    <p className="font-bold">Ledger-Only User:</p>
+                    <p>Email: user@farm.com</p>
+                    <p>Password: user</p>
+                  </div>
                 </div>
               </div>
             </div>

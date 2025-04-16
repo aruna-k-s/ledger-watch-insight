@@ -20,6 +20,14 @@ const users: User[] = [
     farmName: "Green Acres Farm",
     role: "admin",
     permissions: ["ledger", "dashboard", "activities", "admin"]
+  },
+  {
+    id: "2",
+    name: "Jane Smith",
+    email: "user@farm.com",
+    farmName: "Green Acres Farm",
+    role: "user",
+    permissions: ["ledger"]
   }
 ];
 
@@ -82,13 +90,18 @@ export const login = (email: string, password: string): Promise<User> => {
       // Find user by email
       const user = users.find(u => u.email === email);
       
-      // Simple validation
-      if (user && password && password.length >= 6) {
-        // Store user in localStorage in a real app
-        currentUser = user;
-        localStorage.setItem("farmLedger_user", JSON.stringify(user));
-        toast.success("Login successful!");
-        resolve(user);
+      // Simple validation - in a real app we would check hashed passwords
+      if (user) {
+        // For demo purposes, accept any password with length >= 1
+        if (password && password.length >= 1) {
+          // Store user in localStorage in a real app
+          currentUser = user;
+          localStorage.setItem("farmLedger_user", JSON.stringify(user));
+          toast.success("Login successful!");
+          resolve(user);
+        } else {
+          reject(new Error("Invalid credentials"));
+        }
       } else {
         reject(new Error("Invalid credentials"));
       }
