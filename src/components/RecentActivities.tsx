@@ -4,9 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getExpenses, Expense } from "@/utils/data";
 import { format } from "date-fns";
 import { ArrowUpCircle, Calendar, Clock } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 const RecentActivities: React.FC = () => {
-  const expenses = getExpenses().slice(0, 5); // Get 5 most recent expenses
+  // Using useQuery to fetch and cache expenses data
+  const { data: allExpenses, isLoading } = useQuery({
+    queryKey: ['expenses'],
+    queryFn: () => getExpenses(),
+  });
+  
+  // Get 5 most recent expenses
+  const expenses = allExpenses ? allExpenses.slice(0, 5) : [];
 
   const getCategoryIcon = (category: string) => {
     const iconClassName = "h-8 w-8 p-1 rounded-full";
@@ -41,7 +49,11 @@ const RecentActivities: React.FC = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {expenses.length > 0 ? (
+          {isLoading ? (
+            <div className="py-6 text-center text-sm text-muted-foreground">
+              Loading...
+            </div>
+          ) : expenses.length > 0 ? (
             expenses.map((expense: Expense) => (
               <div key={expense.id} className="flex items-start gap-3">
                 {getCategoryIcon(expense.category)}

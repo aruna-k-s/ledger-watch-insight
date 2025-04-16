@@ -6,9 +6,11 @@ import NavBar from "@/components/NavBar";
 import RecentActivities from "@/components/RecentActivities";
 import ExpenseSummary from "@/components/ExpenseSummary";
 import PaymentReminder from "@/components/PaymentReminder";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     // Redirect if not logged in
@@ -16,6 +18,11 @@ const Dashboard: React.FC = () => {
       navigate("/login");
     }
   }, [navigate]);
+
+  useEffect(() => {
+    // Refresh expenses data when dashboard is loaded
+    queryClient.invalidateQueries({ queryKey: ['expenses'] });
+  }, [queryClient]);
 
   return (
     <div className="min-h-screen bg-gray-50">
