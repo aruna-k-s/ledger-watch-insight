@@ -1,7 +1,7 @@
-
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { isLoggedIn } from "@/utils/auth";
+import { isLoggedIn, hasPermission } from "@/utils/auth";
+import { toast } from "sonner";
 import NavBar from "@/components/NavBar";
 import RecentActivities from "@/components/RecentActivities";
 import ExpenseSummary from "@/components/ExpenseSummary";
@@ -13,9 +13,16 @@ const Dashboard: React.FC = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    // Redirect if not logged in
+    // Redirect if not logged in or doesn't have permission
     if (!isLoggedIn()) {
       navigate("/login");
+      return;
+    }
+
+    if (!hasPermission("dashboard")) {
+      toast.error("You don't have permission to access the dashboard");
+      navigate("/ledger");
+      return;
     }
   }, [navigate]);
 

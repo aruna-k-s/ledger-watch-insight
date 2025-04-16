@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { isLoggedIn } from "@/utils/auth";
+import { isLoggedIn, hasPermission } from "@/utils/auth";
 import NavBar from "@/components/NavBar";
 import AddExpenseForm from "@/components/AddExpenseForm";
 import ExpenseList from "@/components/ExpenseList";
@@ -20,9 +20,16 @@ const Ledger: React.FC = () => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    // Redirect if not logged in
+    // Redirect if not logged in or doesn't have permission
     if (!isLoggedIn()) {
       navigate("/login");
+      return;
+    }
+
+    if (!hasPermission("ledger")) {
+      toast.error("You don't have permission to access the ledger");
+      navigate("/dashboard");
+      return;
     }
   }, [navigate]);
 

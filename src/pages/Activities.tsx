@@ -1,6 +1,7 @@
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { isLoggedIn, hasPermission } from "@/utils/auth";
+import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,21 @@ import { DateRange } from "react-day-picker";
 
 const Activities: React.FC = () => {
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Redirect if not logged in or doesn't have permission
+    if (!isLoggedIn()) {
+      navigate("/login");
+      return;
+    }
+
+    if (!hasPermission("activities")) {
+      toast.error("You don't have permission to access the activities page");
+      navigate("/dashboard");
+      return;
+    }
+  }, [navigate]);
+
   const queryClient = useQueryClient();
   
   // Query for expenses

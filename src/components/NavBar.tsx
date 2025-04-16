@@ -1,22 +1,39 @@
 
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LogOut, Menu } from "lucide-react";
+import { LogOut, Menu, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { getCurrentUser, logout } from "@/utils/auth";
+import { getCurrentUser, logout, hasPermission } from "@/utils/auth";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const user = getCurrentUser();
   const [showMobileMenu, setShowMobileMenu] = React.useState(false);
+  
+  const isAdmin = user?.role === "admin";
 
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  // Function to check if a user has permission to access a route
+  const canAccess = (path: string): boolean => {
+    switch(path) {
+      case "/dashboard":
+        return hasPermission("dashboard");
+      case "/activities":
+        return hasPermission("activities");
+      case "/ledger":
+        return hasPermission("ledger");
+      case "/admin":
+        return hasPermission("admin");
+      default:
+        return true;
+    }
   };
 
   return (
@@ -30,39 +47,61 @@ const NavBar: React.FC = () => {
 
         {/* Desktop menu */}
         <nav className="hidden md:flex items-center space-x-4">
-          <Link 
-            to="/dashboard" 
-            className={cn(
-              "px-3 py-2 rounded-md text-sm font-medium",
-              location.pathname === "/dashboard" 
-                ? "bg-farm-green text-white" 
-                : "text-gray-700 hover:bg-gray-100"
-            )}
-          >
-            Dashboard
-          </Link>
-          <Link 
-            to="/activities" 
-            className={cn(
-              "px-3 py-2 rounded-md text-sm font-medium",
-              location.pathname === "/activities" 
-                ? "bg-farm-green text-white" 
-                : "text-gray-700 hover:bg-gray-100"
-            )}
-          >
-            Activities
-          </Link>
-          <Link 
-            to="/ledger" 
-            className={cn(
-              "px-3 py-2 rounded-md text-sm font-medium",
-              location.pathname === "/ledger" 
-                ? "bg-farm-green text-white" 
-                : "text-gray-700 hover:bg-gray-100"
-            )}
-          >
-            Ledger
-          </Link>
+          {canAccess("/dashboard") && (
+            <Link 
+              to="/dashboard" 
+              className={cn(
+                "px-3 py-2 rounded-md text-sm font-medium",
+                location.pathname === "/dashboard" 
+                  ? "bg-farm-green text-white" 
+                  : "text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              Dashboard
+            </Link>
+          )}
+          
+          {canAccess("/activities") && (
+            <Link 
+              to="/activities" 
+              className={cn(
+                "px-3 py-2 rounded-md text-sm font-medium",
+                location.pathname === "/activities" 
+                  ? "bg-farm-green text-white" 
+                  : "text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              Activities
+            </Link>
+          )}
+          
+          {canAccess("/ledger") && (
+            <Link 
+              to="/ledger" 
+              className={cn(
+                "px-3 py-2 rounded-md text-sm font-medium",
+                location.pathname === "/ledger" 
+                  ? "bg-farm-green text-white" 
+                  : "text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              Ledger
+            </Link>
+          )}
+          
+          {canAccess("/admin") && (
+            <Link 
+              to="/admin" 
+              className={cn(
+                "px-3 py-2 rounded-md text-sm font-medium",
+                location.pathname === "/admin" 
+                  ? "bg-farm-green text-white" 
+                  : "text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              Administration
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-4">
@@ -92,42 +131,66 @@ const NavBar: React.FC = () => {
       {showMobileMenu && (
         <div className="md:hidden border-t">
           <div className="container mx-auto px-4 py-2 space-y-1">
-            <Link 
-              to="/dashboard" 
-              className={cn(
-                "block px-3 py-2 rounded-md text-base font-medium",
-                location.pathname === "/dashboard" 
-                  ? "bg-farm-green text-white" 
-                  : "text-gray-700 hover:bg-gray-100"
-              )}
-              onClick={() => setShowMobileMenu(false)}
-            >
-              Dashboard
-            </Link>
-            <Link 
-              to="/activities" 
-              className={cn(
-                "block px-3 py-2 rounded-md text-base font-medium",
-                location.pathname === "/activities" 
-                  ? "bg-farm-green text-white" 
-                  : "text-gray-700 hover:bg-gray-100"
-              )}
-              onClick={() => setShowMobileMenu(false)}
-            >
-              Activities
-            </Link>
-            <Link 
-              to="/ledger" 
-              className={cn(
-                "block px-3 py-2 rounded-md text-base font-medium",
-                location.pathname === "/ledger" 
-                  ? "bg-farm-green text-white" 
-                  : "text-gray-700 hover:bg-gray-100"
-              )}
-              onClick={() => setShowMobileMenu(false)}
-            >
-              Ledger
-            </Link>
+            {canAccess("/dashboard") && (
+              <Link 
+                to="/dashboard" 
+                className={cn(
+                  "block px-3 py-2 rounded-md text-base font-medium",
+                  location.pathname === "/dashboard" 
+                    ? "bg-farm-green text-white" 
+                    : "text-gray-700 hover:bg-gray-100"
+                )}
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Dashboard
+              </Link>
+            )}
+            
+            {canAccess("/activities") && (
+              <Link 
+                to="/activities" 
+                className={cn(
+                  "block px-3 py-2 rounded-md text-base font-medium",
+                  location.pathname === "/activities" 
+                    ? "bg-farm-green text-white" 
+                    : "text-gray-700 hover:bg-gray-100"
+                )}
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Activities
+              </Link>
+            )}
+            
+            {canAccess("/ledger") && (
+              <Link 
+                to="/ledger" 
+                className={cn(
+                  "block px-3 py-2 rounded-md text-base font-medium",
+                  location.pathname === "/ledger" 
+                    ? "bg-farm-green text-white" 
+                    : "text-gray-700 hover:bg-gray-100"
+                )}
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Ledger
+              </Link>
+            )}
+            
+            {canAccess("/admin") && (
+              <Link 
+                to="/admin" 
+                className={cn(
+                  "block px-3 py-2 rounded-md text-base font-medium",
+                  location.pathname === "/admin" 
+                    ? "bg-farm-green text-white" 
+                    : "text-gray-700 hover:bg-gray-100"
+                )}
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Administration
+              </Link>
+            )}
+            
             <div className="border-t pt-2 mt-2">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-700">
