@@ -25,6 +25,7 @@ import { getExpenses, getUnpaidExpenses, Expense, ExpenseCategory } from "@/util
 import NavBar from "@/components/NavBar";
 import PaymentReminder from "@/components/PaymentReminder";
 import { cn } from "@/lib/utils";
+import { DateRange } from "react-day-picker";
 
 const Activities: React.FC = () => {
   const navigate = useNavigate();
@@ -39,10 +40,7 @@ const Activities: React.FC = () => {
   // Filter states
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
-  const [dateRange, setDateRange] = useState<{
-    from: Date | undefined;
-    to: Date | undefined;
-  }>({
+  const [dateRange, setDateRange] = useState<DateRange>({
     from: undefined,
     to: undefined,
   });
@@ -148,7 +146,7 @@ const Activities: React.FC = () => {
                           initialFocus
                           mode="range"
                           selected={dateRange}
-                          onSelect={setDateRange}
+                          onSelect={(range) => setDateRange(range || { from: undefined, to: undefined })}
                           numberOfMonths={2}
                           className={cn("p-3 pointer-events-auto")}
                         />
